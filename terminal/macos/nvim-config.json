@@ -1,0 +1,78 @@
+{
+  "_comment": [
+    "iTerm2 Dynamic Profile for github.com/ariankoochak/nvim-config.",
+    "",
+    "Installed by scripts/terminal.sh as a symlink into",
+    "~/Library/Application Support/iTerm2/DynamicProfiles/. iTerm2 picks the file",
+    "up automatically; your own profiles are never touched.",
+    "",
+    "No 'Dynamic Profile Parent Name' is set on purpose: a dynamic profile with no",
+    "declared parent inherits from your *default* profile, so colours, window size",
+    "and everything else stay exactly as you configured them. Only the keys below",
+    "are overridden.",
+    "",
+    "'Bound Hosts' drives Automatic Profile Switching. An entry prefixed with '&'",
+    "matches the foreground job name, so this profile activates only while nvim is",
+    "running and reverts the moment it exits -- which is what keeps Cmd+C from",
+    "sending SIGINT at a shell prompt. APS requires iTerm2 Shell Integration.",
+    "",
+    "Keyboard Map keys are 'keycode-modifiers'. Printable keys use the character",
+    "code with an 0x prefix (0x73 = 's'); function keys use their bare NSEvent",
+    "code (f702 = left arrow, f703 = right arrow). Modifier mask bits:",
+    "  0x20000 Shift   0x40000 Control   0x80000 Option",
+    "  0x100000 Command   0x200000 NumericPad (always set for arrow keys)",
+    "Action 10 = Send Escape Sequence (Text is what follows ESC),",
+    "Action 11 = Send Hex Code (Text is a space separated list of bytes)."
+  ],
+  "Profiles": [
+    {
+      "Name": "nvim-config",
+      "Guid": "3A04B7EC-39AA-49D0-9C28-473AD6074F49",
+
+      "Normal Font": "JetBrainsMonoNFM-Regular 14",
+      "Use Non-ASCII Font": false,
+
+      "Option Key Sends": 2,
+
+      "Bound Hosts": ["&nvim"],
+
+      "Keyboard Map": {
+        "0x73-0x100000": {
+          "Action": 11,
+          "Text": "0x13",
+          "Label": "Cmd+S -> Ctrl-S (save)"
+        },
+        "0x63-0x100000": {
+          "Action": 11,
+          "Text": "0x03",
+          "Label": "Cmd+C -> Ctrl-C (copy)"
+        },
+        "0x76-0x100000": {
+          "Action": 11,
+          "Text": "0x16",
+          "Label": "Cmd+V -> Ctrl-V (paste)"
+        },
+        "f702-0x300000": {
+          "Action": 10,
+          "Text": "[1;5D",
+          "Label": "Cmd+Left -> <C-Left> (smart home)"
+        },
+        "f703-0x300000": {
+          "Action": 10,
+          "Text": "[1;5C",
+          "Label": "Cmd+Right -> <C-Right> (end of line)"
+        },
+        "f702-0x320000": {
+          "Action": 10,
+          "Text": "[1;6D",
+          "Label": "Cmd+Shift+Left -> <C-S-Left> (select to line start)"
+        },
+        "f703-0x320000": {
+          "Action": 10,
+          "Text": "[1;6C",
+          "Label": "Cmd+Shift+Right -> <C-S-Right> (select to line end)"
+        }
+      }
+    }
+  ]
+}

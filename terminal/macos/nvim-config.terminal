@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Terminal.app profile for github.com/ariankoochak/nvim-config.
+
+  Terminal.app cannot remap Cmd keys and cannot switch profiles per program, so
+  there is nothing here that mirrors the iTerm2 Dynamic Profile's Cmd bindings:
+  under Terminal.app you use Ctrl directly. The one thing that *can* be set is
+  "Use Option as Meta key", which is what makes Option+Arrow, Option+Shift+Arrow
+  and Option+Up/Down reach Neovim as <M-...>.
+
+  There is deliberately no <key>Font</key> in this file. Terminal.app stores
+  fonts as an NSKeyedArchiver blob, which cannot be produced reliably without a
+  Mac, and shipping a broken or guessed blob would be worse than shipping none.
+  Pick the font by hand after importing:
+      Terminal > Settings > Profiles > nvim-config > Text > Font...
+      -> "JetBrainsMono Nerd Font Mono" (some pickers list it as "JetBrainsMono NFM")
+-->
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>nvim-config</string>
+	<key>type</key>
+	<string>Window Settings</string>
+	<key>ProfileCurrentVersion</key>
+	<real>2.07</real>
+	<key>useOptionAsMetaKey</key>
+	<true/>
+	<key>columnCount</key>
+	<integer>120</integer>
+	<key>rowCount</key>
+	<integer>34</integer>
+	<key>ShowWindowSettingsNameInTitle</key>
+	<false/>
+</dict>
+</plist>

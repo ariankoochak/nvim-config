@@ -1,0 +1,7 @@
+# Project-local database connections (see README, "SQL"). Never commit these.
+.lazy.lua
+
+# Editor/OS noise
+*.bak
+*.bak.*
+.DS_Store

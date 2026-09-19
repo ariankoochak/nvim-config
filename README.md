@@ -260,6 +260,10 @@ Leader is `Space`, local leader is `\`.
 | Plugin manager / Mason | `<leader>l` / `<leader>cm` | n |
 | Quit all | `<leader>qq` | n |
 
+When you first open a regular file in a Neovim session, a 10-line terminal
+split opens at the bottom and focus stays in the editor. The dashboard remains
+terminal-free, and closing this split does not make it reopen automatically.
+
 Press `<leader>` and wait to see everything, courtesy of which-key.
 
 ### SQL

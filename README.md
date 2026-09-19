@@ -260,6 +260,9 @@ Leader is `Space`, local leader is `\`.
 | Plugin manager / Mason | `<leader>l` / `<leader>cm` | n |
 | Quit all | `<leader>qq` | n |
 
+The top buffer tab bar stays visible when only one regular file is open, so the
+current file is always represented there.
+
 When you first open a regular file, or start Neovim with a directory path, a
 10-line terminal split opens at the bottom and focus stays in the editor. The
 dashboard remains terminal-free, and closing this split does not make it reopen

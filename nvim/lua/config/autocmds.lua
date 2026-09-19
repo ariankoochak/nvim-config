@@ -52,7 +52,11 @@ local function open_terminal()
   vim.schedule(function()
     Snacks.terminal.open(nil, {
       interactive = false,
-      win = { position = "bottom", height = 10 },
+      win = {
+        position = "bottom",
+        height = 10,
+        wo = { winbar = "" },
+      },
     })
     if vim.api.nvim_win_is_valid(editor_win) then
       vim.api.nvim_set_current_win(editor_win)

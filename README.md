@@ -5,8 +5,9 @@ Docker/YAML, Bash and PostgreSQL — plus a one-line installer that sets up a
 matching environment on **Ubuntu** and **macOS**.
 
 The headline feature is `lua/config/vscode.lua`: a set of VSCode-style editing
-keys (`Ctrl+S`, `Ctrl+C`/`Ctrl+V`, Shift-selection, word jumps, line moves) that
-behave the way muscle memory expects, on both platforms, from a single config.
+keys (`Ctrl+S`, `Ctrl+C`/`Ctrl+V`, line and word deletion, Shift-selection, word
+jumps, line moves) that behave the way muscle memory expects, on both platforms,
+from a single config.
 On macOS the terminal layer translates `Cmd` to `Ctrl` so the Neovim side never
 needs a platform switch.
 
@@ -192,6 +193,8 @@ Every mapping below comes from [`nvim/lua/config/vscode.lua`](nvim/lua/config/vs
 | Paste | `Ctrl+V` | `Cmd+V` | `Ctrl+V` | i |
 | Replace the selection with the clipboard, end in insert | `Ctrl+V` | `Cmd+V` | `Ctrl+V` | s |
 | Delete the selection **without touching any register** | `Backspace` / `Delete` | `Backspace` / `Delete` | `Backspace` / `Delete` | s |
+| Clear the entire current line **without touching any register** | `Ctrl+Backspace` | `Ctrl+Backspace` | `Ctrl+Backspace` | i |
+| Delete the preceding word **without touching any register** | `Alt+Backspace` | `Option+Backspace` | `Option+Backspace` | i |
 | Move the current line up / down, keeping the column | `Alt+↑` / `Alt+↓` | `Option+↑` / `Option+↓` | `Option+↑` / `Option+↓` | n, i |
 | Move the selected line, keeping the selection | `Alt+↑` / `Alt+↓` | `Option+↑` / `Option+↓` | `Option+↑` / `Option+↓` | s |
 
@@ -207,6 +210,12 @@ Details worth knowing:
   into Select mode and restored on the way out.
 - **Word motions are UTF-8 aware.** Any byte ≥ 0x80 counts as a word character,
   so Persian, Cyrillic and CJK text jump and select by word rather than by byte.
+- **Delete shortcuts preserve the clipboard.** `Ctrl+Backspace` clears the text
+  in the current line (leaving an empty line), and `Alt+Backspace` removes the
+  preceding word. Neither alters the unnamed, small-delete or system clipboard
+  registers; `Alt+Backspace` uses the same UTF-8-aware word rules as word motion.
+  The config accepts terminal encodings of `Ctrl+Backspace` as `Ctrl+H` or
+  `Ctrl+Delete`, and `Alt+Backspace` as `Alt+Backspace` or `Alt+Delete`.
 
 ### Overridden defaults
 
@@ -313,6 +322,7 @@ keys below.
 | `Cmd+S` | hex `0x13` (`Ctrl+S`) |
 | `Cmd+C` | hex `0x03` (`Ctrl+C`) |
 | `Cmd+V` | hex `0x16` (`Ctrl+V`) |
+| `Ctrl+Backspace` | hex `0x08` (`Ctrl+H`, clear current line) |
 | `Cmd+←` / `Cmd+→` | `ESC [1;5D` / `ESC [1;5C` (`<C-Left>` / `<C-Right>`) |
 | `Cmd+Shift+←` / `Cmd+Shift+→` | `ESC [1;6D` / `ESC [1;6C` (`<C-S-Left>` / `<C-S-Right>`) |
 | Left `Option` | `Esc+`, so `Option+Arrow`, `Option+Shift+Arrow` and `Option+↑/↓` arrive as Meta |

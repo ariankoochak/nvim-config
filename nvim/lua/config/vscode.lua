@@ -457,6 +457,29 @@ function M.paste_over(row, start_col, end_col)
   end
 end
 
+--- Insert mode Ctrl+Backspace: clear the current line, like the requested
+--- VSCode-style line delete. Uses the buffer API instead of a Vim delete
+--- command, so this operation never overwrites the unnamed/delete registers.
+function M.clear_line()
+  local row = get_pos()
+  api.nvim_buf_set_lines(0, row - 1, row, false, { "" })
+  M.enter_insert(row, 0)
+end
+
+--- Insert mode Alt+Backspace: delete the preceding word, including whitespace
+--- immediately before the cursor. This shares the UTF-8-aware word rules used
+--- by Alt+Left, so Persian and other non-ASCII words are always kept intact.
+--- The buffer API also keeps the clipboard and delete registers unchanged.
+function M.delete_word_left()
+  local row, col = get_pos()
+  local start_row, start_col = move_word_left(row, col, true)
+  if start_row == row and start_col == col then
+    return
+  end
+  api.nvim_buf_set_text(0, start_row - 1, start_col, row - 1, col, { "" })
+  M.enter_insert(start_row, start_col)
+end
+
 --- Move the current line up or down, keeping the cursor's column.
 ---@param dir -1|1
 ---@param insert boolean
@@ -606,6 +629,18 @@ function M.setup()
   -- to Visual, then "_c changes into the black hole register.
   map("s", "<BS>", '<C-g>"_c', "Delete Selection")
   map("s", "<Del>", '<C-g>"_c', "Delete Selection")
+
+  -- Delete backwards. Most terminals encode Ctrl+Backspace as Ctrl+H, while
+  -- terminals with extended key reporting can send the distinct <C-BS> code.
+  -- Keep Ctrl+H scoped to Insert mode: in Normal mode LazyVim uses it to focus
+  -- the window to the left.
+  map("i", "<C-BS>", M.clear_line, "Clear Current Line")
+  map("i", "<C-h>", M.clear_line, "Clear Current Line")
+  map("i", "<C-Del>", M.clear_line, "Clear Current Line")
+  -- Meta + a terminal's Backspace byte can arrive as either <M-BS> or
+  -- <M-Del>, depending on whether that terminal uses 0x08 or 0x7f.
+  map("i", "<M-BS>", M.delete_word_left, "Delete Previous Word")
+  map("i", "<M-Del>", M.delete_word_left, "Delete Previous Word")
 
   -- Move lines.
   map("n", "<M-Up>", function()

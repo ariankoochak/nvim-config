@@ -52,6 +52,11 @@
           "Text": "0x16",
           "Label": "Cmd+V -> Ctrl-V (paste)"
         },
+        "0x33-0x40000": {
+          "Action": 11,
+          "Text": "0x08",
+          "Label": "Ctrl+Backspace -> Ctrl-H (clear current line)"
+        },
         "f702-0x300000": {
           "Action": 10,
           "Text": "[1;5D",

@@ -33,7 +33,7 @@ _install_iterm2_profile() {
 
   mkdir -p "$ITERM_DYNAMIC_DIR"
   link "$ITERM_PROFILE_SRC" "${ITERM_DYNAMIC_DIR}/nvim-config.json"
-  summary "iTerm2: Dynamic Profile 'nvim-config' installed (Cmd+S/C/V and Cmd+(Shift+)Arrow, left Option as Esc+)"
+  summary "iTerm2: Dynamic Profile 'nvim-config' installed (Cmd+S/C/V, Ctrl+Backspace, Cmd+(Shift+)Arrow, left Option as Esc+)"
 
   # Automatic Profile Switching only works with Shell Integration installed.
   if [ -f "$HOME/.iterm2_shell_integration.zsh" ] || [ -f "$HOME/.iterm2_shell_integration.bash" ]; then

@@ -63,6 +63,11 @@ check("the VSCode mappings are live", function()
     { "<C-v>", "i" },
     { "<C-c>", "i" },
     { "<BS>", "s" },
+    { "<C-BS>", "i" },
+    { "<C-h>", "i" },
+    { "<C-Del>", "i" },
+    { "<M-BS>", "i" },
+    { "<M-Del>", "i" },
     { "<M-Up>", "i" },
     { "<M-b>", "n" },
   }) do

@@ -54,6 +54,38 @@ local function get_pos()
   return pos[1], pos[2]
 end
 
+--- Save the current buffer, asking where to save an unnamed file.
+function M.save()
+  local buf = api.nvim_get_current_buf()
+  if api.nvim_buf_get_name(buf) ~= "" or vim.bo[buf].buftype ~= "" then
+    vim.cmd("silent! update")
+    return
+  end
+
+  vim.ui.input({
+    prompt = "Save as: ",
+    default = fn.getcwd(0) .. "/",
+    completion = "file",
+  }, function(path)
+    if not path or path:match("^%s*$") then
+      return
+    end
+
+    path = fn.fnamemodify(fn.expand(path), ":p")
+    if fn.isdirectory(path) == 1 then
+      return
+    end
+
+    vim.schedule(function()
+      if api.nvim_buf_is_valid(buf) then
+        api.nvim_buf_call(buf, function()
+          vim.cmd("silent! saveas " .. fn.fnameescape(path))
+        end)
+      end
+    end)
+  end)
+end
+
 --- Byte length of the UTF-8 character starting at `col`.
 ---@param line string
 ---@param col integer
@@ -582,10 +614,10 @@ function M.setup()
     map(mode, lhs, rhs, desc, { expr = true })
   end
 
-  -- Save. <Cmd> keeps the current mode, so this works from Insert and Select
-  -- without kicking the user out. Overrides Neovim's Insert-mode <C-s>
-  -- (signature help); LazyVim also binds that to <C-k>.
-  map({ "n", "i", "x", "s" }, "<C-s>", "<Cmd>silent! update<CR>", "Save File")
+  -- Save. Named buffers update normally; unnamed ones prompt for a path.
+  -- Overrides Neovim's Insert-mode <C-s> (signature help); LazyVim also binds
+  -- that to <C-k>.
+  map({ "n", "i", "x", "s" }, "<C-s>", M.save, "Save File")
 
   -- Motion. In Normal mode this overrides LazyVim's window-resize bindings.
   for _, spec in ipairs({

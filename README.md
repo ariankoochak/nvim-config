@@ -204,6 +204,8 @@ Details worth knowing:
   selection, exactly like VSCode.
 - **Copying a line copies it linewise.** Pasting it back inserts it *above* the
   current line and your cursor stays on the line it was on — again like VSCode.
+- **Saving an unnamed buffer prompts for a path.** `Ctrl+S` starts from the
+  current working directory; cancelling leaves the buffer unchanged.
 - **Overwriting a selection never touches your clipboard.** Vim normally yanks
   the replaced text into the unnamed register, which `clipboard=unnamedplus`
   forwards to the system clipboard. The registers are snapshotted on the way

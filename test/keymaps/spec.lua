@@ -391,6 +391,63 @@ test("<C-s> saves and stays in Insert mode", function()
   lua_exec([[ pcall(vim.fn.delete, ...) ]], { path })
 end)
 
+test("<C-s> saves an unnamed buffer to the chosen path", function()
+  local path = tmpdir .. "/ctrl-s-unnamed.txt"
+  reset({ "content" }, 1, 7)
+  lua_exec(
+    [[
+    local path = ...
+    pcall(vim.fn.delete, path)
+    _G.nvim_config_test_ui_input = vim.ui.input
+    vim.ui.input = function(opts, on_confirm)
+      _G.nvim_config_test_save_prompt = opts
+      on_confirm(path)
+    end
+  ]],
+    { path }
+  )
+  feed("<C-s>")
+  local saved = lua_exec(
+    [[
+    local path = ...
+    local result = {
+      mode = vim.fn.mode(1),
+      name = vim.api.nvim_buf_get_name(0),
+      readable = vim.fn.filereadable(path),
+      prompt = _G.nvim_config_test_save_prompt,
+    }
+    vim.ui.input = _G.nvim_config_test_ui_input
+    _G.nvim_config_test_ui_input = nil
+    _G.nvim_config_test_save_prompt = nil
+    pcall(vim.fn.delete, path)
+    return result
+  ]],
+    { path }
+  )
+  eq(saved.mode, "i", "still in Insert mode after saving an unnamed buffer")
+  eq(saved.name, path, "the buffer is associated with the chosen file")
+  eq(saved.readable, 1, "the chosen file was written")
+  eq(saved.prompt.prompt, "Save as: ", "the save prompt was shown")
+  eq(saved.prompt.completion, "file", "the prompt offers file completion")
+end)
+
+test("<C-s> leaves an unnamed buffer unchanged when save is cancelled", function()
+  reset({ "content" }, 1, 7)
+  lua_exec([[
+    _G.nvim_config_test_ui_input = vim.ui.input
+    vim.ui.input = function(_, on_confirm) on_confirm(nil) end
+  ]])
+  feed("<C-s>")
+  local cancelled = lua_exec([[
+    local result = { mode = vim.fn.mode(1), name = vim.api.nvim_buf_get_name(0) }
+    vim.ui.input = _G.nvim_config_test_ui_input
+    _G.nvim_config_test_ui_input = nil
+    return result
+  ]])
+  eq(cancelled.mode, "i", "stays in Insert mode after cancelling")
+  eq(cancelled.name, "", "the buffer remains unnamed")
+end)
+
 test("a selection can start from Normal mode", function()
   reset({ "hello world" }, 1, 0, false)
   feed("<C-S-Right>")

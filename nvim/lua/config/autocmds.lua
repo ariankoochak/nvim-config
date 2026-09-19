@@ -39,10 +39,11 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 local terminal_opened = false
+local terminal_group = augroup("terminal_auto_open")
 
--- Open one bottom terminal when the session first enters a real file buffer.
-local function open_terminal_for_file(buf)
-  if terminal_opened or vim.bo[buf].buftype ~= "" or vim.api.nvim_buf_get_name(buf) == "" then
+-- Open one bottom terminal when a real file is opened or Neovim starts on a directory.
+local function open_terminal()
+  if terminal_opened then
     return
   end
 
@@ -59,10 +60,34 @@ local function open_terminal_for_file(buf)
   end)
 end
 
+local function open_terminal_for_file(buf)
+  if vim.bo[buf].buftype == "" and vim.api.nvim_buf_get_name(buf) ~= "" then
+    open_terminal()
+  end
+end
+
+local function open_terminal_for_startup_directory()
+  for i = 0, vim.fn.argc(-1) - 1 do
+    if vim.fn.isdirectory(vim.fn.argv(i)) == 1 then
+      open_terminal()
+      return
+    end
+  end
+end
+
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
-  group = augroup("terminal_on_first_file"),
+  group = terminal_group,
   callback = function(event) open_terminal_for_file(event.buf) end,
 })
 
--- LazyVim can load this file after an initial command-line file is already open.
-vim.schedule(function() open_terminal_for_file(vim.api.nvim_get_current_buf()) end)
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = terminal_group,
+  once = true,
+  callback = open_terminal_for_startup_directory,
+})
+
+-- LazyVim can load this file after its initial file or directory target is already open.
+vim.schedule(function()
+  open_terminal_for_file(vim.api.nvim_get_current_buf())
+  open_terminal_for_startup_directory()
+end)
